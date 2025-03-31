@@ -17,7 +17,7 @@ delivery information,address
 
 payment options:- stripe,razorpay,cashondelivery
 
-place-order button
+place-order button,trackbutton
 
 adminpanel:- orderpage,newto old and update orderstatus
 add items:-upload new product on the page
