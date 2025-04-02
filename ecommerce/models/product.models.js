@@ -34,6 +34,10 @@ required:true
 },
 rating:{
 type:Number,
+},
+discount:{
+type:Number,
+default:0
 }
 },{timestamps:true});
 
