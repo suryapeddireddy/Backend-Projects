@@ -10,9 +10,11 @@ credentials:true
 app.use(urlencoded({extended:true, limit:'20kb'}))
 app.use(express.json({limit:'20kb'}))
 app.use(express.static("public"))
+app.use(cookieParser());
 
 import productroutes from './routes/product.routes.js'
 import userroutes from './routes/user.routes.js'
+import cookieParser from 'cookie-parser';
 app.use('/api/v1/products',productroutes);
 app.use('/api/v1/users',userroutes);
 export default app;

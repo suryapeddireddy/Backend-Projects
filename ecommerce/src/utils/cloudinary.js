@@ -39,8 +39,10 @@ dotenv.config();
           for (const image of existingImages.resources) {
             await cloudinary.uploader.destroy(image.public_id);
           }
+          return;
         } catch (error) {
           console.error("Error deleting images:", error);
+          return null;
         }
       };
       
