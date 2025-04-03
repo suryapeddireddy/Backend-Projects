@@ -7,3 +7,5 @@ const router=Router();
 const cpUpload=upload.fields([{name:'images', maxCount:4}]);
 router.route('/').get(getProducts).post(cpUpload,addProduct);
 router.route('/product/:id').get(getProductbyId).delete(deleteProduct).patch(cpUpload,updateProduct);
+
+export default router;

@@ -7,7 +7,7 @@ required:true
 },
 parentcategory:{
 type:mongoose.Schema.Types.ObjectId,
-ref:"category",
+ref:"Category",
 default: null // means if it is already parent
 }
 },{timestamps:true})

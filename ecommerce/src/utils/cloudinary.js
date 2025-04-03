@@ -4,32 +4,46 @@ import dotenv from 'dotenv'
 dotenv.config();
     cloudinary.config({ 
         cloud_name: 'dexdtmixn', 
-        api_key: CLOUD_API_KEY, 
-        api_secret: CLOUD_API_SECRET // Click 'View API Keys' above to copy your API secret
+        api_key: process.env.CLOUD_API_KEY, 
+        api_secret: process.env.CLOUD_API_SECRET // Click 'View API Keys' above to copy your API secret
     });
     
     // Upload an image
 
-    const UploadImagetoCloudinary=async(filepath,public_id,folder)=>{
+    const UploadImagetoCloudinary=async(filepath,public_id,folderpath)=>{
     try {
-     if(!file)throw new Error("file required");
+     if(!filepath)throw new Error("filepath is  required");
      const uploadResult = await cloudinary.uploader
        .upload(
            filepath, {
-              public_id,
-              folder
+              public_id:public_id,
+              folder:folderpath
            }
-       )
-       .catch((error) => {
-           console.log(error);
-       });
-    
-    fs.unlink(file);
+       );
+       if(fs.existsSync(filepath))fs.unlinkSync(filepath);
+     
     return uploadResult.secure_url;  
     } catch (error) {
+     fs.unlink(filepath);
      return null;    
     }
     }
 
-    export default UploadImagetoCloudinary
+    const destroyImages = async (folderPath) => {
+        try {
+          const existingImages = await cloudinary.api.resources({
+            type: "upload",
+            prefix: folderPath, // Get all images inside this folder
+          });
+      
+          for (const image of existingImages.resources) {
+            await cloudinary.uploader.destroy(image.public_id);
+          }
+        } catch (error) {
+          console.error("Error deleting images:", error);
+        }
+      };
+      
+
+    export {UploadImagetoCloudinary,destroyImages};
      

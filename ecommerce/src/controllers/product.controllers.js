@@ -1,5 +1,5 @@
-import Product from "../models/product.models.js";
-import UploadImagetoCloudinary from '../utils/cloudinary.js'
+import Product from '../models/product.models.js'
+import {UploadImagetoCloudinary,destroyImages} from '../utils/cloudinary.js'
 const getProducts = async (req, res) => {
   try {
     const {
@@ -67,8 +67,9 @@ return res.status(403).json({message:"Access denied, Admins only"});
 }
 if(!title || !description || !price || !stock)return res.status(400).json({message:"All fields are required"});
 let imageurls=[];
+const folderpath=`ecommcerce/products/${title}`;
 for(const file of req.files.images){
-const uploadresult=await UploadImagetoCloudinary(file.path, `${title}`,`ecommerce/products/`);
+const uploadresult=await UploadImagetoCloudinary(file.path, `${title}`,folderpath);
 imageurls.push(uploadresult);
 }
 if(imageurls.length==0){
@@ -117,9 +118,11 @@ const product=await Product.findById(productId);
 if(!product){
 return res.status(404).json({message:"Product not found"});
 }
+await destroyImages(folderpath);
 let imageurls=[];
+const folderpath=`ecommerce/products/${title}`;
 for(const file of req.files.images){
-const secureurl=await UploadImagetoCloudinary(file.path, `${title}`, `ecommerce/products`);
+const secureurl=await UploadImagetoCloudinary(file.path, `${title}`, folderpath);
 imageurls.push(secureurl);
 }
 if(title)product.title=title;
@@ -135,4 +138,4 @@ return res.status(200).json({message:"Product update successfully"});
 return res.status(500).json({message:"failed to update product"});    
 }
 }
-export default { getProducts , getProductbyId, addProduct, deleteProduct, updateProduct};
+export  { getProducts , getProductbyId, addProduct, deleteProduct, updateProduct};
