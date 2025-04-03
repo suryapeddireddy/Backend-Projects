@@ -1,4 +1,4 @@
-import {getProducts , getProductbyId, addProduct, deleteProduct, updateProduct} from '../controllers/payment.controllers.js'
+import {getProducts , getProductbyId, addProduct, deleteProduct, updateProduct} from '../controllers/product.controllers.js'
 import { Router } from 'express'
 import multer from 'multer';
 const upload=multer({dest:'public/uploads/'});
