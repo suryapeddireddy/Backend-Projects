@@ -11,5 +11,7 @@ app.use(express.urlencoded({extended:true, limit:'20kb'}))
 app.use(express.json({limit:'20kb'}))
 app.use(express.static("public"))
 
+import productroutes from '../routes/product.routes.js'
+app.use('/api/v1/products',productroutes);
 
 export default app;
