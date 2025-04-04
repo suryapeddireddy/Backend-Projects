@@ -8,22 +8,26 @@ const taskSchema = new mongoose.Schema({
   description: {
     type: String,
   },
-  createdBy:{
-  type:mongoose.Schema.Types.ObjectId,
-  ref:'User',
+  createdBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
   },
   dueDate: {
-    type: Date, // When the task should be completed
+    type: Date, 
   },
   reminder: {
-    type: Date, // When to send the reminder email
+    type: Date, 
   },
   status: {
     type: String,
-    enum: ["pending", "completed"],//whether task is completed or not
+    enum: ["pending", "completed"],
     default: "pending",
+  },
+  isReminderSent: {
+    type: Boolean,
+    default: false, 
   }
-},{timestamps:true});
+}, { timestamps: true });
 
 const Task = mongoose.model("Task", taskSchema);
 export default Task;

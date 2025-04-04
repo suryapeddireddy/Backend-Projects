@@ -1,5 +1,4 @@
 import Task from "../models/task.models.js";
-import User from "../models/user.models.js";
 
 const CreateTask = async (req, res) => {
   try {
@@ -12,7 +11,7 @@ const CreateTask = async (req, res) => {
     await task.save();
     return res.status(201).json({ message: "Task created successfully", task });
   } catch (error) {
-    return res.status(500).json({ message: "Error in creating task" });
+    return res.status(500).json({ message: "Error in creating task",error:error.message});
   }
 };
 
@@ -123,14 +122,4 @@ const GetReminderTasks = async (req, res) => {
   }
 };
 
-export {
-  CreateTask,
-  DeleteTask,
-  UpdateTask,
-  GetTaskById,
-  GetAllTasks,
-  ToggleTask,
-  GetPendingTasks,
-  GetCompletedTasks,
-  GetReminderTasks
-};
+export {CreateTask,DeleteTask,UpdateTask,GetTaskById,GetAllTasks,ToggleTask,GetPendingTasks,GetCompletedTasks,GetReminderTasks}
