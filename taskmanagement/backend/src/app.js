@@ -10,7 +10,7 @@ credentials:true,
 }))
 app.use(express.json({limit:'50mb'}));
 app.use(express.urlencoded({limit:'50mb',extended:true}));
-
+app.use(cookieParser());
 
 import userroutes from './routes/user.routes.js'
 import taskroutes from './routes/task.routes.js'

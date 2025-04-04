@@ -17,7 +17,6 @@ const taskSchema = new mongoose.Schema({
   },
   reminder: {
     type: Date, // When to send the reminder email
-    required:true,
   },
   status: {
     type: String,
