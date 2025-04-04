@@ -55,7 +55,7 @@ const Login = async (req, res) => {
       return res.status(500).json({ message: "Error in generating tokens" });
     }
 
-    // Store refreshToken in DB (add a field for it in schema if needed)
+    
     user.refreshToken = refreshToken;
     await user.save();
 
