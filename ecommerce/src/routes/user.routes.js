@@ -8,7 +8,8 @@ const cpUpload = upload.fields([{ name: "avatar", maxCount: 1 }]); // No quotes 
 router.route('/register').post(cpUpload,RegisterUser);
 router.route('/login').post(LoginUser);
 router.route('/').get(getallUsers);
-router.route('/user/:id').get(getUserbyId).patch(updateaccount);
+router.route('/user/:id').get(getUserbyId);
+router.route('/updateaccount').patch(verifyJWT,updateaccount);
 router.route('/changepassword').patch(verifyJWT,changePassword);
 router.route('/changeavatar').patch(verifyJWT,cpUpload,updateavatar);
 router.route('/logout').post(verifyJWT, LogoutUser);

@@ -1,4 +1,5 @@
 import Product from '../models/product.models.js'
+import Category from '../models/category.models.js'
 import {UploadImagetoCloudinary,destroyImages} from '../utils/cloudinary.js'
 const getProducts = async (req, res) => {
   try {
@@ -7,8 +8,8 @@ const getProducts = async (req, res) => {
       minprice = 0,
       maxprice = 100000000000000,
       stock,
-      Category,
-      Subcategory,
+      cateogry,
+      subcategory,
       rating,
       sort,
       page = 1,
@@ -26,17 +27,19 @@ const getProducts = async (req, res) => {
     query.price.$lte = Number(maxprice);
     if (stock) query.stock({ $gt: 0 });
     if (discount) query.discount({ $gt: 0 });
-    query.Category = Category;
-    query.Subcategory = Subcategory;
-    query.rating = rating;
+    if(cateogry){
+    query.category=cateogry;
+    }
+    if(subcategory)query.subcategory=subcategory;
+    if(rating)query.rating = rating;
     let sortoption = {};
-    sortoption[sort] = 1;
+    if(sort)sortoption[sort] = 1;
     const skip = (Number(page) - 1) * Number(limit);
     const products = await Product.find(query)
       .sort(sortoption)
       .skip(skip)
       .limit(Number(limit))
-      .select("_id");
+      .select("_id title description");
     const totalproducts = await Product.countDocuments(query);
     return res.status(200).json({
       products,
@@ -61,34 +64,48 @@ const getProductbyId = async (req, res) => {
 
 const addProduct=async(req,res)=>{
 try {
-const {title, description, price, stock, Category, Subcategory, discount}=req.body;
+const {title, description, price, stock, discount, category,subcategory=null}=req.body;
 if(req.user.role!=="Admin"){
 return res.status(403).json({message:"Access denied, Admins only"});
 }
 if(!title || !description || !price || !stock)return res.status(400).json({message:"All fields are required"});
+const productexist=await Product.findOne({title});
+if(productexist){
+return res.status(400).json({message:"Product already exists"});
+}
 let imageurls=[];
-const folderpath=`ecommcerce/products/${title}`;
+const folderpath=`ecommerce/products/${title}`;
+let count=1;
 for(const file of req.files.images){
-const uploadresult=await UploadImagetoCloudinary(file.path, `${title}`,folderpath);
+const uploadresult=await UploadImagetoCloudinary(file.path, `${title}/${count}`,folderpath);
 imageurls.push(uploadresult);
+count++;
 }
 if(imageurls.length==0){
 return res.status(400).json({message:"images are required"});
 }
+let reqcategory;
+if(category){
+  const categoryexist=await Category.findOne({name:subcategory, parentcategory:category});
+  if(!categoryexist)await Category.create({name:subcategory,parentcategory:category});
+  reqcategory=await Category.findOne({name:subcategory, parentcategory:category});
+  }
+const convertedPrice = Number(price);
+const convertedStock = Number(stock);
+const convertedDiscount = Number(discount);
 const newproduct=new Product({
 title,
 description,
-price,
-stock,
-Category,
-Subcategory,
-discount,
-images:imageurls
+price:convertedPrice,
+stock:convertedStock,
+discount:convertedDiscount,
+images:imageurls,
+category:reqcategory._id,
 });
 await  newproduct.save();
 return res.status(201).json({message:"Product added successfully"});
 } catch (error) {
-    return res.status(500).json({message:"error in adding product"});
+    return res.status(500).json({message:"error in adding product",error:error.message});
 }
 }
 
@@ -112,7 +129,7 @@ return res.status(500).json({message:"Error in deleting product"});
 const updateProduct=async(req,res)=>{
 try {
 if(req.user.role!=="Admin")return res.status(403).json({message:"Only Admins allowed to upadate product"});
-const {title, description, Category, Subcategory, price, discount}=req.params;
+const {title, description, category,subcategory,price, discount}=req.params;
 const {productId}=req.params;
 const product=await Product.findById(productId);
 if(!product){
@@ -127,8 +144,8 @@ imageurls.push(secureurl);
 }
 if(title)product.title=title;
 if(description)product.description=description;
-if(Category)product.Category=Category;
-if(Subcategory)product.SubCategory=Subcategory;
+if(Category)product.category=category;
+if(subcategory)product.subcategory=subcategory;
 if(price)product.price=price;
 if(discount)product.discount=discount;
 if(imageurls)product.images=imageurls;

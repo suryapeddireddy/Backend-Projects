@@ -196,18 +196,19 @@ const updateavatar = async (req, res) => {
 
 const updateaccount = async (req, res) => {
   try {
-    const { name, email, phone, address, pincode } = req.body;
+    const { name, email, phone, address, pincode ,role} = req.body;
     const userId = req.user._id;
     const user = await User.findById(userId);
-    user.name = name;
-    user.email = email;
-    user.phone = phone;
-    user.address = address;
-    user.pincode = pincode;
+    if(name)user.name = name;
+    if(email)user.email = email;
+    if(phone)user.phone = phone;
+    if(address)user.address = address;
+    if(pincode)user.pincode = pincode;
+    if(role)user.role=role;
     await user.save();
     return res.status(200).json({ message: "updated account successfully" });
   } catch (error) {
-    return res.status(500).json({ message: "error in updating successfully" });
+    return res.status(500).json({ message: "error in updating account" ,error:error.message});
   }
 };
 export {
