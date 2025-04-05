@@ -63,7 +63,7 @@ const Login = async (req, res) => {
       .status(200)
       .cookie("refreshToken", refreshToken, { httpOnly: true, secure: true, sameSite: "strict" })
       .cookie("accessToken", accessToken, { httpOnly: true, secure: true, sameSite: "strict" })
-      .json({ message: "Login successful" });
+      .json({ message: "Login successful",refreshToken });
   } catch (error) {
     return res.status(500).json({ message: "Error in login", error: error.message });
   }
