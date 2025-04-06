@@ -9,5 +9,4 @@ router.route('/completed').get(GetCompletedTasks);
 router.route('/reminder').get(GetReminderTasks);
 router.route('/:id').patch(UpdateTask).delete(DeleteTask).get(GetTaskById);
 router.route('/:id/ToggleTask').patch(ToggleTask);
-
 export default router;
