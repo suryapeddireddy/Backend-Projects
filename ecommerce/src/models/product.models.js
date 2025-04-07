@@ -5,6 +5,7 @@ const ProductSchema = new mongoose.Schema(
     title: {
       type: String,
       required: true,
+      unique: true,
     },
     description: {
       type: String,
@@ -24,23 +25,19 @@ const ProductSchema = new mongoose.Schema(
         required: true,
       },
     ],
-    category:{
-    type:mongoose.Schema.Types.ObjectId,
-    ref:"Category",
-    required:true,
-    },
-    subcategory:{
-    type:mongoose.Schema.Types.ObjectId,
-    ref:"Category",
-    required:true,
-    },
     rating: {
       type: Number,
     },
-    discount: {
-      type: Number,
-      default: 0,
-    },
+    categories: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Category",
+      },
+    ],
+    discount:{
+    type:Number,
+    default:0
+    }
   },
   { timestamps: true }
 );

@@ -6,15 +6,15 @@ type:mongoose.Schema.Types.ObjectId,
 ref:'Order',
 required:true
 },
-amountPaid:{
-type:Number,
-default:0
-},
 PaymentStatus:{
 type:String,
 default:'Unpaid',
 enum:['Unpaid','Paid']
-}
+},
+paymentIntentId:{
+type:String,
+required:true
+},
 })
 
 const Payment=mongoose.model('Payment',PaymentSchema);

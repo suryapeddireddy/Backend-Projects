@@ -21,7 +21,7 @@ const OrderSchema = new mongoose.Schema({
     required: true,
   },
   shippingaddress: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
     required: true,
   },
   totalamount: {

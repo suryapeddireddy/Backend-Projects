@@ -26,21 +26,9 @@ required:true
 avatar:{
 type:String
 },
-address:{
-type:String,
-required:true
-},
-pincode:{
-type:String
-},
 refreshtoken:{
 type:String
 },
-role:{
-type:String,
-enum:["Admin", "User"],
-default:"User"
-}
 },{timestamps:true});
 
 UserSchema.pre("save", async function (next) {
