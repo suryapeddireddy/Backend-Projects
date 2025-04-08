@@ -1,6 +1,7 @@
 import express, { urlencoded } from 'express'
 import cors from 'cors'
 import dotenv from 'dotenv'
+import cookieParser from 'cookie-parser';
 dotenv.config();
 const app=express();
 app.use(cors({
@@ -14,7 +15,10 @@ app.use(cookieParser());
 
 import productroutes from './routes/product.routes.js'
 import userroutes from './routes/user.routes.js'
-import cookieParser from 'cookie-parser';
+import categoriesroutes from './routes/categories.routes.js'
+import brandroutes from './controllers/brand.controllers.js'
 app.use('/api/v1/products',productroutes);
 app.use('/api/v1/users',userroutes);
+app.use('/api/v1/categories',categoriesroutes);
+app.use('/api/v1/brands',brandroutes);
 export default app;

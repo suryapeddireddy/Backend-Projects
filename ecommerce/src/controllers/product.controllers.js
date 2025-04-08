@@ -13,6 +13,7 @@ const getProducts = async (req, res) => {
       limit,
       page,
       sort,
+      brands,
     } = req.params;
 
     // Convert to numbers
@@ -43,7 +44,10 @@ const getProducts = async (req, res) => {
     query.price = { $gte: minprice, $lte: maxprice };
     query.discount = { $gte: mindiscount }; // Make sure discount exists in Product schema
     query.rating = { $gte: minrating };
-
+    if (brands.length) {
+      query.brand = { $in: brands };
+      // brands is an array,
+    }
     // Pagination
     const skip = (page - 1) * limit;
 
@@ -80,10 +84,17 @@ const getProductbyId = async (req, res) => {
 
 const addProduct = async (req, res) => {
   try {
+    if (req.user.role !== "Admin") {
+      return res.status(403).json({ message: "forbidden" });
+    }
     let images = [];
-    const { title, description, price, stock, discount, categories } = req.body;
+    const { title, description, price, stock, discount, categories, brand } =
+      req.body;
     if (!req.files) {
       return res.status(401).json({ message: "Provide filepaths" });
+    }
+    if (!title || !description || !price || !stock || !categories || !brand) {
+      return res.status(400).json({ message: "provide all fields" });
     }
     for (const file of req.files) {
       const folderpath = `ecommerce/products/${title}`;
@@ -104,6 +115,7 @@ const addProduct = async (req, res) => {
       discount,
       categories,
       images,
+      brand,
     });
     await Product.save();
     return res
@@ -116,6 +128,9 @@ const addProduct = async (req, res) => {
 
 const deleteProduct = async (req, res) => {
   try {
+    if (req.user.role !== "Admin") {
+      return res.status(403).json({ message: "forbidden" });
+    }
     const { productId } = req.params;
     const isdeleted = await Product.findByIdAndDelete(productId);
     if (isdeleted) return res.status(200).json({ message: "product deleted" });
@@ -126,8 +141,18 @@ const deleteProduct = async (req, res) => {
 
 const updateProduct = async (req, res) => {
   try {
-    const { title, description, price, discount, categories, productId } =
-      req.body;
+    if (req.user.role !== "Admin") {
+      return res.status(403).json({ message: "forbidden" });
+    }
+    const {
+      title,
+      description,
+      price,
+      discount,
+      categories,
+      productId,
+      brand,
+    } = req.body;
     const product = await Product.findById(productId);
     if (!product) return res.status(404).json({ message: "product not found" });
     const images = [];
@@ -151,6 +176,9 @@ const updateProduct = async (req, res) => {
     if (price) product.price = price;
     if (discount) product.discount = discount;
     if (categories) product.categories = categories;
+    if (brand) {
+      product.brand = brand;
+    }
     await product.save();
     return res.status(200).json({ message: "product successfully updated" });
   } catch (error) {

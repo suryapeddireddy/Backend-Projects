@@ -9,6 +9,7 @@ const RegisterUser = async (req, res) => {
       phone,
       address = "",
       pincode = "",
+      role
     } = req.body;
     if (!name || !email || !password || !phone)
       return res.status(400).json({ message: "All fields are required" });
@@ -35,6 +36,7 @@ const RegisterUser = async (req, res) => {
       pincode,
       avatar: secureurl,
     });
+    if(role)newuser.role=role;
     await newuser.save();
     return res.status(201).json({ message: "User created successfully" });
   } catch (error) {
