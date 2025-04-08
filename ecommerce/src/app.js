@@ -16,7 +16,7 @@ app.use(cookieParser());
 import productroutes from './routes/product.routes.js'
 import userroutes from './routes/user.routes.js'
 import categoriesroutes from './routes/categories.routes.js'
-import brandroutes from './controllers/brand.controllers.js'
+import brandroutes from './routes/brand.routes.js'
 app.use('/api/v1/products',productroutes);
 app.use('/api/v1/users',userroutes);
 app.use('/api/v1/categories',categoriesroutes);

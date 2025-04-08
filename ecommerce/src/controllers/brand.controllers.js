@@ -60,4 +60,4 @@ const GetBrandById = async (req, res) => {
   }
 };
 
-export { AddBrand, DeleteBrand, GetBrandById };
+export  { AddBrand, DeleteBrand, GetBrandById };
