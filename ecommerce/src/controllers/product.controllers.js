@@ -3,72 +3,79 @@ import Category from "../models/category.models.js";
 import { UploadImagetoCloudinary, destroyImages } from "../utils/cloudinary.js";
 const getProducts = async (req, res) => {
   try {
-    const { selectedcategories } = req.body;
-    let {
+    const {
+      selectedcategories,
       mindiscount,
       minprice,
       maxprice,
-      keyword,
+      keyword = "",
       minrating,
-      limit,
-      page,
-      sort,
+      limit = 10,
+      page = 1,
+      sort = "createdAt",
+      order = "asc",
       brands,
-    } = req.params;
+    } = req.query;
 
-    // Convert to numbers
-    mindiscount = Number(mindiscount);
-    minprice = Number(minprice);
-    maxprice = Number(maxprice);
-    minrating = Number(minrating);
-    limit = Number(limit);
-    page = Number(page);
+    // Convert types
+    const numericLimit = Number(limit);
+    const numericPage = Number(page);
+    const numericMinDiscount = Number(mindiscount) || 0;
+    const numericMinPrice = Number(minprice) || 0;
+    const numericMaxPrice = Number(maxprice) || Infinity;
+    const numericMinRating = Number(minrating) || 0;
 
-    // Build query object
     let query = {};
 
-    // Categories filter
-    if (selectedcategories && selectedcategories.length > 0) {
-      query.categories = { $all: selectedcategories };
+    // Filter by selected categories
+    if (Array.isArray(selectedcategories) && selectedcategories.length > 0) {
+      query.categories = { $in: selectedcategories };
     }
 
-    // Keyword search
-    if (keyword) {
+    //Keyword search in title or description
+    if (keyword.trim() !== "") {
       query.$or = [
         { title: { $regex: keyword, $options: "i" } },
         { description: { $regex: keyword, $options: "i" } },
       ];
     }
 
-    // Price, discount, rating
-    query.price = { $gte: minprice, $lte: maxprice };
-    query.discount = { $gte: mindiscount }; // Make sure discount exists in Product schema
-    query.rating = { $gte: minrating };
-    if (brands.length) {
+    // Filters: price, discount, rating
+    query.price = { $gte: numericMinPrice, $lte: numericMaxPrice };
+    query.discount = { $gte: numericMinDiscount };
+    query.rating = { $gte: numericMinRating };
+
+    // Filter by brands
+    if (Array.isArray(brands) && brands.length > 0) {
       query.brand = { $in: brands };
-      // brands is an array,
     }
-    // Pagination
-    const skip = (page - 1) * limit;
 
-    // Sorting
+    // Pagination & Sorting
+    const skip = (numericPage - 1) * numericLimit;
     const sortOption = {};
-    if (sort) sortOption[sort] = 1;
+    sortOption[sort] = order === "desc" ? -1 : 1;
 
-    const Products = await Product.find(query)
-      .skip(skip)
-      .limit(limit)
-      .sort(sortOption);
+    // Fetch products and total count
+    const [Products, total] = await Promise.all([
+      Product.find(query).skip(skip).limit(numericLimit).sort(sortOption),
+      Product.countDocuments(query),
+    ]);
 
-    return res
-      .status(200)
-      .json({ message: "Successfully fetched products", Products });
+    return res.status(200).json({
+      message: "Successfully fetched products",
+      total,
+      page: numericPage,
+      limit: numericLimit,
+      Products,
+    });
   } catch (error) {
-    return res
-      .status(500)
-      .json({ message: "Error fetching products", error: error.message });
+    return res.status(500).json({
+      message: "Error fetching products",
+      error: error.message,
+    });
   }
 };
+
 
 const getProductbyId = async (req, res) => {
   try {
@@ -96,7 +103,7 @@ const addProduct = async (req, res) => {
     if (!title || !description || !price || !stock || !categories || !brand) {
       return res.status(400).json({ message: "provide all fields" });
     }
-    for (const file of req.files) {
+    for (const file of req.files['images']) {
       const folderpath = `ecommerce/products/${title}`;
       const public_id = `${title}`;
       const filepath = file.path;
@@ -117,7 +124,7 @@ const addProduct = async (req, res) => {
       images,
       brand,
     });
-    await Product.save();
+    await product.save();
     return res
       .status(201)
       .json({ message: "Added product successfully", Product });
@@ -157,7 +164,7 @@ const updateProduct = async (req, res) => {
     if (!product) return res.status(404).json({ message: "product not found" });
     const images = [];
     const deleteimages = await destroyImages(`ecommerce/products`);
-    for (const file of req.files) {
+    for (const file of req.files['images']) {
       const folderPath = `ecommerce/products/${title}`;
       const filepath = file.path;
       const public_id = `${title}`;
