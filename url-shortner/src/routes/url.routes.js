@@ -1,6 +1,7 @@
 import { Router } from "express";
-import { generatenewshorturl } from "../controllers/url.controllers.js";
+import { generatenewshorturl ,redirecturl,getanalytics} from "../controllers/url.controllers.js";
 const router=Router();
 
-router.route('/').get(generatenewshorturl);
+router.route('/').post(generatenewshorturl);
+router.route('/:shortId').patch(redirecturl).get(getanalytics);
 export default router;
