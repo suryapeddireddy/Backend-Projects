@@ -25,26 +25,30 @@ const generatenewshorturl = async (req, res) => {
 };
 
 const redirecturl = async (req, res) => {
-  try {
-    const { shortId } = req.params;
-    const url = await URL.findOne({ shortId:shortId });
-
-    if (!url) {
-      return res.status(404).json({ message: "Short URL not found", shortId });
+    try {
+      const { shortId } = req.params;
+      const url = await URL.findOne({ shortId: shortId });
+     console.log(shortId);
+      if (!url) {
+        return res.status(404).json({ message: "Short URL not found", shortId });
+      }
+  
+      url.visitHistory.push({ timeStamp: Date.now() });
+      await url.save();
+      res.redirect(url.redirectURL); // Uses default 302 status (temporary redirect)
+      // or
+      // res.redirect(301, url.redirectURL); // Explicitly use 301 for permanent redirect
+  
+    } catch (error) {
+      console.error("Error in redirecting URL:", error);
+      return res.status(500).json({ message: "Error in redirecting URL", error: error.message });
     }
-
-    url.visitHistory.push({ timeStamp: Date.now() });
-    await url.save();
-    res.redirect(200,url.redirectURL);
-  } catch (error) {
-    console.error("Error in redirecting URL:", error); // Log the error for debugging
-    return res.status(500).json({ message: "Error in redirecting URL", error: error.message }); // Include error message for client
-  }
-};
+  };
 
 const getanalytics=async(req,res)=>{
 try {
 const {shortId}=req.params;
+console.log(shortId);
 const url = await URL.findOne({ shortId:shortId });
 if (!url) {
  return res.status(404).json({ message: "Short URL not found", shortId });

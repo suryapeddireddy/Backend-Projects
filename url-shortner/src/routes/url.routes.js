@@ -3,5 +3,5 @@ import { generatenewshorturl ,redirecturl,getanalytics} from "../controllers/url
 const router=Router();
 
 router.route('/').post(generatenewshorturl);
-router.route('/:shortId').patch(redirecturl).get(getanalytics);
+router.route('/:shortId').get(redirecturl).get(getanalytics);
 export default router;
