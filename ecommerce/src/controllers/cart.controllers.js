@@ -16,65 +16,63 @@ const ViewCart = async (req, res) => {
 
 const UpdateQuantity = async (req, res) => {
     try {
-        const { ItemId } = req.params;
-        const userId = req.user._id; // Assuming you have user authentication and req.user is populated
-        const { oprn } = req.params; // Either '+' or '-'
+        const userId = req.user._id;
+        const { productId, quantity = 1 } = req.body; // Default quantity to 1 if not provided
 
-        const product = await Product.findById(ItemId);
+        const product = await Product.findById(productId);
         if (!product) {
             return res.status(404).json({ message: "Product not found" });
         }
 
-        const cart = await Cart.findOne({ owner: userId });
+        let cart = await Cart.findOne({ owner: userId });
+
         if (!cart) {
-            return res.status(404).json({ message: "Cart not found for this user" });
-        }
-
-        const cartItemIndex = cart.Products.findIndex(item => item.Product.equals(ItemId));
-
-        if (cartItemIndex === -1) {
-            return res.status(404).json({ message: "Product not found in cart" });
-        }
-
-        let newQuantity = cart.Products[cartItemIndex].quantity;
-
-        if (oprn === '+') {
-            newQuantity++;
-        } else if (oprn === '-') {
-            newQuantity--;
-            if (newQuantity < 1) {
-                // Optionally remove the item from the cart if quantity becomes less than 1
-                cart.Products.splice(cartItemIndex, 1);
-                await cart.save();
-                return res.status(200).json({ message: "Product removed from cart as quantity reached zero", cart });
-            }
+            // If the cart doesn't exist, create a new one
+            cart = new Cart({
+                owner: userId,
+                Products: [{ Product: productId, quantity }],
+            });
+            await cart.save();
+            return res.status(201).json({ message: "Product added to new cart", cart });
         } else {
-            return res.status(400).json({ message: "Invalid operation. Use '+' for increment or '-' for decrement" });
+            // If the cart exists, check if the product is already in it
+            const existingCartItem = cart.Products.find(item => item.Product.equals(productId));
+
+            if (existingCartItem) {
+                // If the product exists, update the quantity
+                existingCartItem.quantity += quantity;
+            } else {
+                // If the product doesn't exist in the cart, add it
+                cart.Products.push({ Product: productId, quantity });
+            }
+            await cart.save();
+            return res.status(200).json({ message: "Product added to existing cart", cart });
         }
-
-        cart.Products[cartItemIndex].quantity = newQuantity;
-        await cart.save();
-
-        res.status(200).json({ message: "Cart quantity updated successfully", cart });
 
     } catch (error) {
-        console.error("Error updating cart quantity:", error);
-        res.status(500).json({ message: "Could not update cart quantity" });
+        console.error("Error adding to cart:", error);
+        res.status(500).json({ message: "Could not add product to cart", error: error.message });
     }
 };
 
 const EmptyCart = async (req, res) => {
     try {
         const userId = req.user._id;
+
         const cart = await Cart.findOne({ owner: userId });
+
         if (!cart) {
-            return res.status(404).json({ message: "Cart not found" });
+            return res.status(404).json({ message: "Cart not found for this user" });
         }
-        cart.Products = [];
-        await cart.save();
-        return res.status(200).json({ message: "Cart cleared" });
+
+        // Remove the entire cart document
+        await Cart.deleteOne({ owner: userId });
+
+        res.status(200).json({ message: "Cart emptied and removed successfully" });
+
     } catch (error) {
-        return res.status(500).json({ message: "Internal server error", error: error.message });
+        console.error("Error emptying and removing cart:", error);
+        res.status(500).json({ message: "Could not empty and remove cart", error: error.message });
     }
 };
 
