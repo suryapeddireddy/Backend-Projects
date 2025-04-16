@@ -1,10 +1,10 @@
 import User from "../models/user.models.js";
-import UploadImage from "../middlewares/multer.middlewares.js";
+import UploadImage from '../utils/cloudinary.js'
 
 const generateAccessAndRefreshTokens = async (user) => {
   try {
-    const accessToken = await user.generateAccessToken;
-    const refreshToken = await user.generateRefreshToken;
+    const accessToken = await user.generateAccessToken();
+    const refreshToken = await user.generateRefreshToken();
     return { accessToken, refreshToken };
   } catch (error) {
     return {};
@@ -18,10 +18,8 @@ const Register = async (req, res) => {
     if (!username || !email || !password)
       return res.status(400).json({ message: "Provide all fields" });
 
-    const profilepath = req.file?.path;
-    if (!profilepath)
-      return res.status(400).json({ message: "Profile image is required" });
-
+    const profilepath = req.file?.path||"";
+    
     const existingUser = await User.findOne({ username });
     if (existingUser)
       return res.status(403).json({ message: "User already exists" });
@@ -29,14 +27,7 @@ const Register = async (req, res) => {
     const cloudinaryUrl = await UploadImage(
       `/chat/users/${username}`,
       profilepath
-    );
-
-    if (!cloudinaryUrl) {
-      return res
-        .status(500)
-        .json({ message: "Failed to upload image to Cloudinary" });
-    }
-
+    )||"";
     const newUser = new User({
       username,
       email,
@@ -46,10 +37,10 @@ const Register = async (req, res) => {
 
     await newUser.save();
 
-    return res.status(201).json({ message: "User registered successfully" });
+    return res.status(201).json(newUser);
   } catch (error) {
     console.error("Register Error:", error.message);
-    return res.status(500).json({ message: "Error in registering User", error:error.message});
+    return res.status(500).json({error:error.message});
   }
 };
 
@@ -67,7 +58,7 @@ const Login = async (req, res) => {
 
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    const isPasswordCorrect = await user.matchPassword(password);
+    const isPasswordCorrect = await user.matchpassword(password);
     if (!isPasswordCorrect)
       return res.status(401).json({ message: "Password incorrect" });
 
@@ -78,14 +69,12 @@ const Login = async (req, res) => {
     const cookieOptions = {
       httpOnly: true,
       secure: true,
-      sameSite: "strict",
     };
 
     res.cookie("accessToken", accessToken, cookieOptions);
     res.cookie("refreshToken", refreshToken, cookieOptions);
-
+     console.log(accessToken,refreshToken);
     return res.status(200).json({
-      message: "Login successful",
       user: {
         id: user._id,
         username: user.username,
@@ -95,7 +84,7 @@ const Login = async (req, res) => {
     });
   } catch (error) {
     console.error("Login Error:", error.message);
-    return res.status(500).json({ message: "Login failed",error:error.message});
+    return res.status(500).json({error:error.message});
   }
 };
 
@@ -104,19 +93,17 @@ const Logout = async (req, res) => {
     res.clearCookie("accessToken", {
       httpOnly: true,
       secure: true,
-      sameSite: "strict",
     });
 
     res.clearCookie("refreshToken", {
       httpOnly: true,
-      secure: true,
-      sameSite: "strict",
+      secure: true
     });
 
-    return res.status(200).json({ message: "Logged out successfully" });
+    return res.status(200).json({success:true});
   } catch (error) {
     console.error("Logout Error:", error.message);
-    return res.status(500).json({ message: "Server error during logout" });
+    return res.status(500).json({ error: error.message});
   }
 };
 

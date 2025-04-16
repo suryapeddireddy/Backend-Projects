@@ -1,18 +1,16 @@
 import React from "react";
 
-const SignUpPage = () => {
-  const handleSubmit = (e) => {
+const SignUpPage = ({handleSignup}) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const formData = new FormData(e.target);
-    const username = formData.get("username");
-    const email = formData.get("email");
-    const password = formData.get("password");
-
-    console.log("Sign Up Submitted:", { username, email, password });
-
-    // You can add further logic here (e.g., send to backend or redirect)
+      const formData = new FormData(e.target);
+      const username = formData.get("username");
+      const email = formData.get("email");
+      const password = formData.get("password");
+      console.log("Sign Up Submitted:", { username, email, password });
+     await handleSignup({ username, email, password });
   };
+  
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4">

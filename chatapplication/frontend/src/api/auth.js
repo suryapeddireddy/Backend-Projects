@@ -9,6 +9,7 @@ const login = async (credentials) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(credentials),
+      credentials:true
     });
     return  response;
   } catch (error) {
@@ -17,28 +18,30 @@ const login = async (credentials) => {
 };
 
 // SIGNUP
-const signup = async (userData) => {
-  try {
-    const response = await fetch(`${API_URL}/register`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(userData),
-    });
-   return response;
-  } catch (error) {
-    return { error: error.message };
-  }
+const signup = async ({ username, email, password }) => {
+  const formData = new FormData();
+  formData.append("username", username);
+  formData.append("email", email);
+  formData.append("password", password);
+  // If you have a profile image:
+  // formData.append("profile", file); // where `file` is a File object
+
+  const response = await fetch("http://localhost:3000/api/v1/users/register", {
+    method: "POST",
+    body: formData,
+    credentials: 'include', // include if you're using cookies
+  });
+
+  return response;
 };
+
+
 
 const logout=async()=>{
 try {
 const response = await fetch(`${API_URL}/logout`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    }
+   headers: { "Content-Type": "multipart/form-data" }
   });
   return  response; 
 } catch (error) {

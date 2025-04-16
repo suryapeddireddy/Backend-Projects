@@ -19,7 +19,11 @@ function App() {
     const res = await login({ email, password,username});
     if (res.status===500 || res.error) {
       console.log("Login error:", res.data.error);
-    } else {
+    }
+    else if(res.status===404){
+    console.log("User doesnt Exist");
+    }
+    else {
       console.log("Login success:", res);
       setisuserlogged(true); 
     }
@@ -28,11 +32,13 @@ function App() {
   // Handle Signup
   const handleSignup = async () => {
     const res = await signup({ username, email, password });
-    if (res.status===500 || res.error) {
-      console.log("Signup error:", res.data.error);
+    console.log(res);
+    if (res?.status === 403) {
+      alert("User already exists. Please log in.");
+    } else if (res?.status === 201) {
+      alert("Successfully registered and logged in!");
     } else {
-      console.log("Signup success:", res);
-      setisuserlogged(true); // ✅ update login status
+      alert("Something went wrong during signup.");
     }
   };
   // Handle Logout
@@ -57,12 +63,6 @@ function App() {
           path="/signup"
           element={
             <SignUpPage
-              username={username}
-              setusername={setusername}
-              email={email}
-              setemail={setemail}
-              password={password}
-              setpassword={setpassword}
               handleSignup={handleSignup}
             />
           }
