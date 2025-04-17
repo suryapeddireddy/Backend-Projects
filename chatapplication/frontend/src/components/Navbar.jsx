@@ -1,18 +1,42 @@
 import React, { useState } from 'react';
 import profile from '../assets/profile.png';
-
-const Navbar = ({ loggedIn, setloggeIn }) => {
+import axios from 'axios';
+const Navbar = ({ userlogged, setuserlogged}) => {
   const [showDropdown, setShowDropdown] = useState(false);
 
   const handleProfileClick = () => {
     setShowDropdown(!showDropdown);
   };
 
-  const handleLogout = () => {
-    setloggeIn(false);
-    setShowDropdown(false);
+  const handleLogout = async () => {
+    try {
+      const res = await axios.post("http://localhost:3000/api/v1/users/logout", {}, { withCredentials: true });
+  
+      if (res.status === 200) {
+        setuserlogged(false);
+        setShowDropdown(false);
+        alert("Logged out successfully");
+      } else {
+        alert("Unexpected response");
+      }
+  
+    } catch (error) {
+      if (error.response) {
+        const status = error.response.status;
+        if (status === 500) {
+          alert("Internal server error");
+        } else if (status === 401) {
+          alert("Token not provided");
+        } else {
+          alert("Unexpected error");
+        }
+      } else {
+        alert("Network error");
+      }
+      console.log(error);
+    }
   };
-
+  
   return (
     <div className="flex h-auto items-center w-full relative">
       {/* Left section */}
@@ -43,7 +67,7 @@ const Navbar = ({ loggedIn, setloggeIn }) => {
               Profile
             </a>
 
-            {loggedIn ? (
+            {userlogged ? (
               <button
                 onClick={handleLogout}
                 className="w-full text-left px-2 py-1 hover:bg-gray-100"

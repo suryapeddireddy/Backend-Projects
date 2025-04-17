@@ -1,22 +1,60 @@
 import React from 'react'
 import { MdEmail } from "react-icons/md";
-import { FaRegUser } from "react-icons/fa";
 import { RiLockPasswordLine } from "react-icons/ri";
 import { useState } from 'react';
 import {useNavigate} from 'react-router-dom';
-const Login = () => {
+import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
+import axios from 'axios';
+const Login = ({userlogged, setuserlogged}) => {
   const navigate=useNavigate();
-  const [username, setUsername] = useState('');
   const [email, setEmail]     = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false); 
   const handlesignup=()=>{
   navigate("/signup");
   }
-  const handlelogin=()=>{
-  if(!username || !email){
-  alert("Enter all fields to login");
-  }
-  }
+  const handlelogin = async () => {
+    try {
+      if (!email || !password) {
+        alert("Enter all fields to login");
+        return;
+      }
+  
+      const res = await axios.post("http://localhost:3000/api/v1/users/login", {
+        email,
+        password,
+      }, {withCredentials:true});
+  
+      if (res.status === 200) {
+        alert("User logged in");
+        console.log(res);
+        setuserlogged(true);
+        navigate('/');
+      } else {
+        alert("Unexpected response");
+      }
+  
+    } catch (error) {
+      if (error.response) {
+        const status = error.response.status;
+  
+        if (status === 404) {
+          alert("User not found");
+        } else if (status === 401) {
+          alert("Incorrect Password");
+        } else if (status === 500) {
+          alert("Internal server error");
+        } else {
+          alert("Login failed");
+        }
+      } else {
+        alert("Network error");
+      }
+  
+      console.log(error);
+    }
+  };
+  
  
   return (
    <div className="flex flex-col gap-5 p-4 max-w-md border border-gray-400 rounded shadow-lg m-auto">
@@ -27,7 +65,10 @@ const Login = () => {
    </div>
    <div className="flex bg-gray-700 items-center gap-2 rounded p-2">
    <RiLockPasswordLine className="text-white text-xl"></RiLockPasswordLine>
-   <input type="text" className="border border-gray-300 bg-transparent text-white w-full" placeholder="Enter password" onChange={(e) => setPassword(e.target.value)}></input>
+   <input type={showPassword?"text":"password"} className="border border-gray-300 bg-transparent text-white w-full" placeholder="Enter password" onChange={(e) => setPassword(e.target.value)}></input>
+   <button onClick={() => setShowPassword(!showPassword)} className="text-white">
+            {showPassword ? <AiFillEyeInvisible /> : <AiFillEye />}
+          </button>
    </div>
    </div>
    <div className="flex justify-between">

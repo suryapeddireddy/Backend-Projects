@@ -14,25 +14,15 @@ const generateAccessAndRefreshTokens = async (user) => {
 const Register = async (req, res) => {
   try {
     const { username, email, password } = req.body;
-
-    if (!username || !email || !password)
-      return res.status(400).json({ message: "Provide all fields" });
-
-    const profilepath = req.file?.path||"";
-    
+  
     const existingUser = await User.findOne({ username });
     if (existingUser)
       return res.status(403).json({ message: "User already exists" });
 
-    const cloudinaryUrl = await UploadImage(
-      `/chat/users/${username}`,
-      profilepath
-    )||"";
     const newUser = new User({
       username,
       email,
       password,
-      profile: cloudinaryUrl,
     });
 
     await newUser.save();
@@ -46,15 +36,9 @@ const Register = async (req, res) => {
 
 const Login = async (req, res) => {
   try {
-    const { username, email, password } = req.body;
+    const {email, password } = req.body;
 
-    if (!username && !email)
-      return res.status(400).json({ message: "Provide username or email" });
-    if (!password) return res.status(400).json({ message: "Provide password" });
-
-    const user = await User.findOne({
-      $or: [{ username }, { email }],
-    });
+    const user = await User.findOne({email});
 
     if (!user) return res.status(404).json({ message: "User not found" });
 
