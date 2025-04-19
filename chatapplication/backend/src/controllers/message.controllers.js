@@ -1,6 +1,6 @@
 import User from "../models/user.models.js";
 import Message from "../models/message.models.js";
-import UploadImage from "../utils/cloudinary.js";
+import {UploadImage, deleteImage} from "../utils/cloudinary.js";
 const getUsersForSidebar = async (req, res) => {
   try {
     const loggedInUserId = req.user._id;

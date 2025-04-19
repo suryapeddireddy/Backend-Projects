@@ -1,17 +1,32 @@
-import Navbar from "./components/Navbar"
-import { Routes, Route } from 'react-router-dom'; // Correct imports for Routes and Route
-import Signup from './pages/signup'
-import Login from './pages/login'
-import { useState } from "react";
+import Navbar from "./components/Navbar";
+import { Routes, Route } from "react-router-dom"; // Correct imports for Routes and Route
+import Signup from "./pages/signup";
+import Login from "./pages/login";
+import Profile from "./pages/profile";
+import Contact from './pages/contact'
+import { useState } from "react"; // Removed useEffect because it's not needed here
+
 export default function App() {
-const [userlogged, setuserlogged] = useState(false);
+  const [userdata, setuserdata] = useState({ username: "", email: "", profile: "" });
+
   return (
     <>
-    <Navbar userlogged={userlogged} setuserlogged={setuserlogged}></Navbar>
-    <Routes>
-    <Route path="/signup" element={<Signup/>}></Route>
-    <Route path="/login" element={<Login userlogged={userlogged} setuserlogged={setuserlogged}/>}></Route>
-    </Routes>
+      <Navbar userdata={userdata} setuserdata={setuserdata} />
+      <Routes>
+        <Route path="/signup" element={<Signup setuserdata={setuserdata} />} />
+        <Route
+          path="/profile"
+          element={<Profile userdata={userdata} setuserdata={setuserdata}/>}
+        />
+        <Route
+          path="/login"
+          element={<Login setuserdata={setuserdata} />}
+        />
+        <Route
+          path="/Contact"
+          element={<Contact/>}
+        />
+      </Routes>
     </>
-  )
+  );
 }

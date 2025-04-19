@@ -5,7 +5,7 @@ import { useState } from 'react';
 import {useNavigate} from 'react-router-dom';
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import axios from 'axios';
-const Login = ({userlogged, setuserlogged}) => {
+const Login = ({userdata, setuserdata}) => {
   const navigate=useNavigate();
   const [email, setEmail]     = useState('');
   const [password, setPassword] = useState('');
@@ -27,10 +27,11 @@ const Login = ({userlogged, setuserlogged}) => {
   
       if (res.status === 200) {
         alert("User logged in");
-        console.log(res);
-        setuserlogged(true);
+        const user = { username: res.data.user.username, email };
+        setuserdata(user);
         navigate('/');
-      } else {
+      }
+       else {
         alert("Unexpected response");
       }
   
