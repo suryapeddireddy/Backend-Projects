@@ -4,6 +4,7 @@ import Signup from "./pages/signup";
 import Login from "./pages/login";
 import Profile from "./pages/profile";
 import Contact from './pages/contact'
+import Home from "./pages/Home";
 import { useState } from "react"; // Removed useEffect because it's not needed here
 
 export default function App() {
@@ -25,6 +26,10 @@ export default function App() {
         <Route
           path="/Contact"
           element={<Contact/>}
+        />
+        <Route
+          path="/Home"
+          element={<Home/>}
         />
       </Routes>
     </>

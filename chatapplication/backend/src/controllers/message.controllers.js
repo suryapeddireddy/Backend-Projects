@@ -27,7 +27,7 @@ const GetMessages = async (req, res) => {
     });
     res
       .status(200)
-      .json({ message: "fetched all messages successfully", messages });
+      .json({messages});
   } catch (error) {
     return res
       .status(500)
@@ -53,7 +53,7 @@ const SendMessages = async (req, res) => {
       images,
     });
     await newMessage.save();
-    return res.status(201).json({ message: "Posted message", newMessage });
+    return res.status(201).json({ newMessage });
   } catch (error) {
     return res
       .status(500)
