@@ -1,6 +1,6 @@
 import User from "../models/user.models.js";
 import {UploadImage, deleteImage} from '../utils/cloudinary.js'
-
+import {io} from '../utils/socket.js'
 const generateAccessAndRefreshTokens = async (user) => {
   try {
     const accessToken = await user.generateAccessToken();
@@ -57,6 +57,8 @@ const Login = async (req, res) => {
 
     res.cookie("accessToken", accessToken, cookieOptions);
     res.cookie("refreshToken", refreshToken, cookieOptions);
+    const socketId=user._id;
+    io.to(socketId).emit("connected", "Successfully connected to the socket!");
     return res.status(200).json({
       user: {
         id: user._id,
@@ -82,6 +84,14 @@ const Logout = async (req, res) => {
       httpOnly: true,
       secure: true
     });
+   const socketId=req.user._id;
+   if(socketId){
+     const socket=io.sockets.sockets.get(socketId);
+     if(socket){
+      socket.disconnect(true);
+      console.log("socket disconnected successfully");
+     }
+   }
 
     return res.status(200).json({success:true});
   } catch (error) {
