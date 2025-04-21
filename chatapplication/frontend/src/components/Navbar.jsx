@@ -71,61 +71,63 @@ const Navbar = ({ userdata, setuserdata }) => {
   }, [userdata]);
 
   return (
-    <div className="flex h-auto items-center w-full relative">
-      {/* Left section */}
-      <div className="w-3/4">
-        <Link to="/" className="font-semibold text-lg">
-          Chatapp
-        </Link>
-      </div>
+    <div className="fixed top-0 left-0 w-full z-10 bg-white shadow-md">
+      <div className="flex h-auto items-center w-full relative py-4 px-6">
+        {/* Left section */}
+        <div className="w-3/4">
+          <Link to="/" className="font-semibold text-lg">
+            Chatapp
+          </Link>
+        </div>
 
-      {/* Right section */}
-      <div className="w-1/4 flex items-center justify-between relative">
-        <Link to="/Contact" className="text-sm">
-          Contact Us
-        </Link>
+        {/* Right section */}
+        <div className="w-1/4 flex items-center justify-between relative">
+          <Link to="/Contact" className="text-sm">
+            Contact Us
+          </Link>
 
-        {/* Profile Image */}
-        <img
-          ref={profileImageRef}
-          src={userdata?.profile || profile}
-          alt="profile"
-          className="cursor-pointer rounded-full w-12 h-11"
-          onClick={handleProfileClick}
-        />
+          {/* Profile Image */}
+          <img
+            ref={profileImageRef}
+            src={userdata?.profile || profile}
+            alt="profile"
+            className="cursor-pointer rounded-full w-12 h-11"
+            onClick={handleProfileClick}
+          />
 
-        {/* Dropdown Menu */}
-        {showDropdown && (
-          <div
-            ref={dropdownRef}
-            className="absolute right-0 top-full mt-2 bg-white shadow-md border rounded-md w-32 p-2 z-10"
-          >
-            <Link
-              to="/profile"
-              className="block px-2 py-1 hover:bg-gray-100"
-              onClick={() => setShowDropdown(false)}
+          {/* Dropdown Menu */}
+          {showDropdown && (
+            <div
+              ref={dropdownRef}
+              className="absolute right-0 top-full mt-2 bg-white shadow-md border rounded-md w-32 p-2 z-10"
             >
-              Profile
-            </Link>
-
-            {userdata?.username ? (
-              <button
-                onClick={handleLogout}
-                className="w-full text-left px-2 py-1 hover:bg-gray-100"
-              >
-                Logout
-              </button>
-            ) : (
               <Link
-                to="/login"
+                to="/profile"
                 className="block px-2 py-1 hover:bg-gray-100"
                 onClick={() => setShowDropdown(false)}
               >
-                Login
+                Profile
               </Link>
-            )}
-          </div>
-        )}
+
+              {userdata?.username ? (
+                <button
+                  onClick={handleLogout}
+                  className="w-full text-left px-2 py-1 hover:bg-gray-100"
+                >
+                  Logout
+                </button>
+              ) : (
+                <Link
+                  to="/login"
+                  className="block px-2 py-1 hover:bg-gray-100"
+                  onClick={() => setShowDropdown(false)}
+                >
+                  Login
+                </Link>
+              )}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
