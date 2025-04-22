@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Your Page Title</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <input placeholder="Write your message here" id="input" />
+  <button id="message">Send Message</button>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io(); // connect to backend
+    socket.on('chatMessage', (message)=>{
+    console.log(message);
+    })
+    const input = document.getElementById("input");
+    const button = document.getElementById("message");
+
+    button.addEventListener("click", () => {
+      const message = input.value.trim();
+      if (message) {
+        socket.emit("chatMessage", message); // custom event name
+        input.value = "";
+      }
+    });
+  </script>
+
+</body>
+</html>
