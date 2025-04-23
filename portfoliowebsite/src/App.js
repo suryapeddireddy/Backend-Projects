@@ -17,15 +17,12 @@ export default function App() {
   const timer=setTimeout(handleend, 2000);
   return ()=>clearTimeout(timer);
   }, [location])
-  
+  if(!isloaded){
+  return <Loadingscreen isloaded={isloaded} setisloaded={setisloaded} />;
+  }
   return (
     <>
-      {!isloaded && (
-        <Loadingscreen isloaded={isloaded} setisloaded={setisloaded} />
-      )}
-
       <Navbar />
-
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
