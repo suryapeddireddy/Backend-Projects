@@ -1,0 +1,64 @@
+# General Node.js
+node_modules
+package-lock.json
+yarn.lock
+npm-debug.log*
+yarn-error.log*
+
+# Environment variables
+.env
+.env.local
+.env.development
+.env.development.local
+.env.test
+.env.test.local
+.env.production
+.env.production.local
+
+# Logs and temporary files
+logs
+*.log
+*.tmp
+temp
+tmp
+
+# Editor and IDE specific files
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# Build output
+build
+dist
+out
+public/build
+static/build
+
+# OS specific files
+.DS_Store
+Thumbs.db
+
+# Coverage reports
+coverage
+lcov-report
+
+# Optional: If using Docker
+# docker-compose.override.yml
+# Dockerfile.prod
+
+# Optional: If using specific testing frameworks
+# cypress/
+# playwright-report/
+
+# Optional: If using specific linters/formatters
+# .eslintcache
+# .prettiercache
+
+# Optional: If you have compiled assets
+# *.js.map
+# *.css.map
+
+# Add any other project-specific files or directories you want to ignore here
