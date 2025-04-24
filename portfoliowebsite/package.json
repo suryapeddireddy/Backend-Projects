@@ -1,5 +1,6 @@
 {
   "name": "portfoliowebsite",
+  "homepage": "https://github.com/suryapeddireddy/Backend-Projects/tree/main/portfoliowebsite",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -12,7 +13,6 @@
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^13.5.0",
-    "dotenv": "^16.5.0",
     "emailjs": "^4.0.3",
     "framer-motion": "^12.8.2",
     "react": "^19.1.0",
@@ -27,7 +27,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "predeploy":"npm run build",
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": [
@@ -50,6 +52,7 @@
   "devDependencies": {
     "autoprefixer": "^10.4.21",
     "daisyui": "^5.0.27",
+    "gh-pages": "^6.3.0",
     "postcss": "^8.5.3",
     "tailwindcss": "^3.4.17"
   }

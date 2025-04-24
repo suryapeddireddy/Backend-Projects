@@ -9,9 +9,12 @@ const Contact = () => {
     message: "",
   });
 
-  const SERVICE_ID = "service_stlci1t";
-  const TEMPLATE_ID ="template_yrk3zw7";
-  const PUBLIC_KEY ="de4RFkBFkyZV9EBmi";
+  const SERVICE_ID = process.env.REACT_APP_EMAILJS_SERVICE_ID;
+  const TEMPLATE_ID = process.env.REACT_APP_EMAILJS_TEMPLATE_ID;
+  const PUBLIC_KEY = process.env.REACT_APP_EMAILJS_PUBLIC_KEY;
+  
+  console.log("SERVICE_ID:", SERVICE_ID); // just for testing
+  
 
 
 const handleSubmit = async (e) => {
