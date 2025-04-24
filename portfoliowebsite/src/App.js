@@ -6,7 +6,7 @@ import Home from "./pages/Home";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Projects from "./pages/Projects";
-
+import RevealonScroll from "./components/revealonscroll";
 export default function App() {
   const [isloaded, setisloaded] = useState(false);
   const location=useLocation();
@@ -23,12 +23,14 @@ export default function App() {
   return (
     <>
       <Navbar />
+      <RevealonScroll>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/projects" element={<Projects />} />
         <Route path="/contact" element={<Contact />} />
       </Routes>
+      </RevealonScroll>
     </>
   );
 }
