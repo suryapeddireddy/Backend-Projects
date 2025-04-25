@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState ,useEffect} from 'react';
 import { MdEmail } from "react-icons/md";
 import { RiLockPasswordLine } from "react-icons/ri";
 import { useNavigate } from 'react-router-dom';
@@ -8,6 +8,12 @@ import { connectSocket } from '../utils/socket'; // Import connectSocket from ut
 
 const Login = ({ userdata, setuserdata }) => {
   const navigate = useNavigate();
+ useEffect(() => {
+ if(userdata.username){
+ navigate('/home');
+ }
+ }, [userdata,navigate])
+ 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false); 
@@ -35,9 +41,8 @@ const Login = ({ userdata, setuserdata }) => {
         const user = { username: res.data.user.username, email };
         setuserdata(user);
 
-        // Connect to the socket after a successful login
-        connectSocket(res.data.user.username);  // Pass the username or any other relevant data
-        navigate('/');
+        connectSocket(res.data.user.id);  
+        navigate('/home');
       } else {
         alert("Unexpected response");
       }

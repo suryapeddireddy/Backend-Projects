@@ -14,14 +14,14 @@ export default function App() {
     <>
       <Navbar userdata={userdata} setuserdata={setuserdata} />
       <Routes>
-        <Route path="/signup" element={<Signup setuserdata={setuserdata} />} />
+        <Route path="/signup" element={<Signup userdata={userdata} />} />
         <Route
           path="/profile"
           element={<Profile userdata={userdata} setuserdata={setuserdata}/>}
         />
         <Route
           path="/login"
-          element={<Login setuserdata={setuserdata} />}
+          element={<Login userdata={userdata} setuserdata={setuserdata} />}
         />
         <Route
           path="/Contact"
@@ -29,7 +29,7 @@ export default function App() {
         />
         <Route
           path="/Home"
-          element={<Home/>}
+          element={<Home userdata={userdata} setuserdata={setuserdata}/>}
         />
       </Routes>
     </>

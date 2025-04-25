@@ -1,7 +1,7 @@
 import User from "../models/user.models.js";
 import { UploadImage } from "../utils/cloudinary.js";
-import { io } from "../utils/socket.js";
-import userSocketMap from "../utils/userSocketMap.js"; // Make sure this is exported
+import { io,userSocketMap } from "../utils/socket.js";
+
 
 const generateAccessAndRefreshTokens = async (user) => {
   try {

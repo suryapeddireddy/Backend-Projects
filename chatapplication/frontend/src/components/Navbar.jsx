@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom"; // ✅ Added this import
+import { Link, useNavigate } from "react-router-dom"; // ✅ Added this import
 import profile from "../assets/profile.png";
 import axios from "axios";
 import { disconnectSocket } from "../utils/socket"; // Import the socket disconnect utility
@@ -8,7 +8,7 @@ const Navbar = ({ userdata, setuserdata }) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef(null);
   const profileImageRef = useRef(null);
-
+  const navigate=useNavigate();
   // Toggle dropdown visibility
   const handleProfileClick = () => {
     setShowDropdown((prevState) => !prevState);
@@ -31,6 +31,7 @@ const Navbar = ({ userdata, setuserdata }) => {
         alert("Logged out successfully");
         const user = { username: "", email: "", profile: "" };
         setuserdata(user);
+        navigate('/');
       } else {
         alert("Unexpected response");
       }

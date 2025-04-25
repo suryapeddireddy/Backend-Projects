@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { MdEmail } from "react-icons/md";
 import { FaRegUser } from "react-icons/fa";
 import { RiLockPasswordLine } from "react-icons/ri";
@@ -6,13 +6,17 @@ import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-const Signup = () => {
+const Signup = ({userdata}) => {
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [email, setEmail]     = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false); // 👁️ state
-
+  useEffect(() => {
+    if(userdata.username){
+    navigate('/home');
+    }
+    }, [userdata,navigate])
   const handlesignup = async () => {
     try {
       if (!username || !email || !password) {
@@ -46,6 +50,12 @@ const Signup = () => {
       }
       console.log(error);
     }
+    finally{
+    setEmail('');
+    setPassword('');
+    setUsername('');
+    setShowPassword(false);
+    }
   };
 
   const handlelogin = () => {
@@ -61,6 +71,7 @@ const Signup = () => {
             type="text"
             className="border border-gray-300 bg-transparent text-white w-full"
             placeholder="Username"
+            value={username}
             onChange={(e) => setUsername(e.target.value)}
           />
         </div>
@@ -70,6 +81,7 @@ const Signup = () => {
             type="text"
             className="border border-gray-300 bg-transparent text-white w-full"
             placeholder="Email"
+            value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
         </div>
@@ -79,6 +91,7 @@ const Signup = () => {
             type={showPassword ? "text" : "password"}
             className="border border-gray-300 bg-transparent text-white w-full"
             placeholder="Enter password"
+            value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
           <button onClick={() => setShowPassword(!showPassword)} className="text-white">
