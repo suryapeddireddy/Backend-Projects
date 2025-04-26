@@ -16,24 +16,25 @@ const ChatHome = ({ userdata, setuserdata }) => {
       navigate("/login");
       return;
     }
-
-    // 1. Connect socket
   
-
+    // ✅ Connect the socket and register user
+    connectSocket(userdata._id);
     const socket = getSocket();
-
-    // 2. Listen for online users
-    socket.on("online-users", (userList) => {
-      setonlineusers(userList);
-    });
-
-    // 3. Fetch all users
+  
+    // ✅ Wait for socket to be connected before listening
+    if (socket) {
+      socket.on("online-users", (userList) => {
+        setonlineusers(userList);
+      });
+    }
+  
+    // ✅ Fetch users
     const fetchUsers = async () => {
       try {
         const res = await axios.get("http://localhost:3000/api/v1/messages/", {
           withCredentials: true,
         });
-
+  
         if (res.status === 200 && res.data.filteredUsers) {
           setUsers(res.data.filteredUsers);
         } else {
@@ -44,13 +45,14 @@ const ChatHome = ({ userdata, setuserdata }) => {
         navigate("/");
       }
     };
-
+  
     fetchUsers();
-
+  
     return () => {
-      socket.off("online-users");
+      if (socket) socket.off("online-users");
     };
   }, [userdata, navigate]);
+  
 
   // 4. Enhance each user with online status
   const enhancedUsers = users.map((user) => ({

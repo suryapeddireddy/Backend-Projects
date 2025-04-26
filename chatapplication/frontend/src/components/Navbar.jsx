@@ -71,9 +71,6 @@ const Navbar = ({ userdata, setuserdata }) => {
     };
   }, []);
 
-  useEffect(() => {
-    console.log("User data changed:", userdata);
-  }, [userdata]);
 
   return (
     <div>
