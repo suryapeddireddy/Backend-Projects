@@ -72,60 +72,64 @@ const Profile = ({ userdata, setuserdata }) => {
   };
 
   return (
-    <div className="border border-gray-700 p-3 max-w-md m-auto">
-      <div className="flex flex-col items-center">
-        <h2 className="text-xl font-bold">Profile</h2>
-        <h3 className="text-sm mb-4 text-gray-500">Your Profile Information</h3>
+    <div className="max-w-lg mx-auto p-6 bg-white border border-gray-300 rounded-lg shadow-lg">
+      <div className="text-center">
+        <h2 className="text-2xl font-semibold text-gray-800 mb-3">Profile</h2>
+        <h3 className="text-sm text-gray-500 mb-6">Your Profile Information</h3>
 
         <div className="relative">
           <img
             src={userdata?.profile || profile}
             alt="profile"
-            className="w-24 h-24 rounded-full border-4 border-gray-300 object-cover"
+            className="w-32 h-32 rounded-full border-4 border-gray-300 object-cover mx-auto"
           />
 
           <button
             onClick={handleEditClick}
-            className="absolute bottom-0 right-0 bg-gray-500 p-2 rounded-full text-white profile-edit-btn"
+            className="absolute bottom-0 right-0 bg-blue-600 p-2 rounded-full text-white"
           >
             <MdEdit />
           </button>
         </div>
       </div>
 
-      <div className="mt-4 space-y-2">
-        <div>
-          <div className="flex items-center gap-1 font-semibold">
-            <FaUser /> Username
-          </div>
-          <div className="border border-gray-700 px-2 py-1">
-            {userdata.username}
-          </div>
+      <div className="mt-6 space-y-4">
+        <div className="flex items-center gap-2">
+          <FaUser className="text-lg text-gray-600" />
+          <div className="font-medium text-gray-700">Username</div>
         </div>
-        <div>
-          <div className="flex items-center gap-1 font-semibold">
-            <MdEmail /> Email
-          </div>
-          <div className="border border-gray-700 px-2 py-1">
-            {userdata.email}
-          </div>
+        <div className="border border-gray-300 px-4 py-2 rounded-md bg-gray-50">
+          {userdata.username}
+        </div>
+
+        <div className="flex items-center gap-2">
+          <MdEmail className="text-lg text-gray-600" />
+          <div className="font-medium text-gray-700">Email</div>
+        </div>
+        <div className="border border-gray-300 px-4 py-2 rounded-md bg-gray-50">
+          {userdata.email}
         </div>
       </div>
 
       {showmodal && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-80 space-y-4 shadow-md">
-            <h3 className="text-lg font-semibold">Upload Profile Image</h3>
-            <input type="file" accept="image/*" onChange={handleFileChange} />
-            <div className="flex justify-end gap-2">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-8 w-96 space-y-6 shadow-md">
+            <h3 className="text-lg font-semibold text-center">Upload Profile Image</h3>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="w-full p-2 border border-gray-300 rounded-md"
+            />
+            <div className="flex justify-end gap-4">
               <button
-                className="px-4 py-1 rounded bg-gray-300"
+                className="px-6 py-2 rounded bg-gray-300 text-gray-800 hover:bg-gray-400"
                 onClick={() => setshowmodal(false)}
               >
                 Cancel
               </button>
               <button
-                className="px-4 py-1 rounded bg-blue-600 text-white"
+                className="px-6 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
                 onClick={handleUpload}
               >
                 Upload
